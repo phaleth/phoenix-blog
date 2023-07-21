@@ -10,6 +10,27 @@ docker run -d -p 5433:5432 --name=postgres \
 -d postgres:15.3
 ```
 
+Setup environment variables config `.env`
+
+```sh
+export POSTGRES_USERNAME="postgres"
+export POSTGRES_PASSWORD="postgres"
+export POSTGRES_HOSTNAME="localhost"
+export POSTGRES_PORT=5433
+```
+
+Load configuration variables from `.env` into your current shell
+
+```sh
+source .env
+```
+
+Verify environment variables are loaded
+
+```sh
+echo $POSTGRES_USERNAME
+```
+
 To start your Phoenix server:
 
 - Run `mix setup` to install and setup dependencies

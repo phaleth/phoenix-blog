@@ -9,7 +9,7 @@ env:
 
 jobs:
   deploy-website:
-    if: github.repository_owner == 'phoenix_blog'
+    if: github.repository_owner == 'phaleth'
     runs-on: ubuntu-latest
 
     steps:

@@ -3,3 +3,11 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+.main-nav {
+  padding: 1rem 0;
+}
+
+.main-nav .item {
+  padding: 0 1rem;
+}

@@ -35,7 +35,12 @@ defmodule PhoenixBlog.PostsTest do
 
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
-      update_attrs = %{content: "some updated content", subtitle: "some updated subtitle", title: "some updated title"}
+
+      update_attrs = %{
+        content: "some updated content",
+        subtitle: "some updated subtitle",
+        title: "some updated title"
+      }
 
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert post.content == "some updated content"
@@ -58,6 +63,17 @@ defmodule PhoenixBlog.PostsTest do
     test "change_post/1 returns a post changeset" do
       post = post_fixture()
       assert %Ecto.Changeset{} = Posts.change_post(post)
+    end
+
+    test "create_post/1 with valid data creates and bunch of content then delete_post/1" do
+      some_content = Enum.to_list(1..1_000) |> Enum.join(", ")
+      valid_attrs = %{content: some_content, subtitle: "some subtitle", title: "some title"}
+
+      assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
+      assert post.content == some_content
+      assert post.subtitle == "some subtitle"
+      assert post.title == "some title"
+      assert {:ok, %Post{}} = Posts.delete_post(post)
     end
   end
 end

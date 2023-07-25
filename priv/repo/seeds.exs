@@ -9,3 +9,7 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+Enum.map(1..100, fn i ->
+  PhoenixBlog.Posts.create_post(%{title: "title #{i}", subtitle: "subtitle", content: "content"})
+end)

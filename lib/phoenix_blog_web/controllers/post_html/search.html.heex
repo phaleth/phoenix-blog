@@ -1,6 +1,6 @@
 <.header>
     Listing Posts
-    <.form :let={f} for={%{}} action={~p"/search"} method={"get"}>
+    <.form :let={f} for={%{}} action={~p"/search"}>
         <.input type="text" field={f[:search_term]}/>
         <.button type="submit" >Search</.button>
     </.form>

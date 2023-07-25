@@ -21,6 +21,17 @@ defmodule PhoenixBlog.Posts do
     Repo.all(Post)
   end
 
+  def filter_posts(search_term) do
+    search_term = "%#{search_term}%"
+    query =
+      from(p in Post,
+        where: ilike(p.title, ^search_term),
+        order_by: [desc: p.inserted_at]
+      )
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single post.
 

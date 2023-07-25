@@ -77,6 +77,26 @@ defmodule PhoenixBlogWeb.PostControllerTest do
     end
   end
 
+  describe "search posts" do
+    test "search for posts - non-matching", %{conn: conn} do
+      post = post_fixture(title: "some title")
+      conn = get(conn, ~p"/search", search_term: "Non-Matching")
+      refute html_response(conn, 200) =~ post.title
+    end
+
+    test "search for posts - exact match", %{conn: conn} do
+      post = post_fixture(title: "some title")
+      conn = get(conn, ~p"/search", search_term: "some title")
+      assert html_response(conn, 200) =~ post.title
+    end
+
+    test "search for posts - partial match", %{conn: conn} do
+      post = post_fixture(title: "some title")
+      conn = get(conn, ~p"/search", search_term: "itl")
+      assert html_response(conn, 200) =~ post.title
+    end
+  end
+
   defp create_post(_) do
     post = post_fixture()
     %{post: post}

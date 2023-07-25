@@ -11,3 +11,14 @@
 .main-nav .item {
   padding: 0 1rem;
 }
+
+.search-form {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.search-button {
+  margin-top: 0.3rem;
+}

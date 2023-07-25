@@ -75,5 +75,28 @@ defmodule PhoenixBlog.PostsTest do
       assert post.title == "some title"
       assert {:ok, %Post{}} = Posts.delete_post(post)
     end
+
+    test "filter_posts/1 filters posts by partial and case-insensitive title" do
+      post = post_fixture(title: "Title")
+
+      # non-matching
+      assert Posts.filter_posts("Non-Matching") == []
+      # exact match
+      assert Posts.filter_posts("Title") == [post]
+      # partial match end
+      assert Posts.filter_posts("tle") == [post]
+      # partial match front
+      assert Posts.filter_posts("Titl") == [post]
+      # partial match middle
+      assert Posts.filter_posts("itl") == [post]
+      # case insensitive lower
+      assert Posts.filter_posts("title") == [post]
+      # case insensitive upper
+      assert Posts.filter_posts("TITLE") == [post]
+      # case insensitive and partial match
+      assert Posts.filter_posts("ITL") == [post]
+      # empty
+      assert Posts.filter_posts("") == [post]
+    end
   end
 end

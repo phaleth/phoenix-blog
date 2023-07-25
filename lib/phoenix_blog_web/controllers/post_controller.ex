@@ -59,4 +59,15 @@ defmodule PhoenixBlogWeb.PostController do
     |> put_flash(:info, "Post deleted successfully.")
     |> redirect(to: ~p"/posts")
   end
+
+  def search(conn, params) do
+    search_term = Map.get(params, "search_term", "")
+
+    posts = case search_term do
+      "" -> Posts.list_posts()
+      _ -> Posts.filter_posts(search_term)
+    end
+
+    render(conn, :index, posts: posts)
+  end
 end

@@ -1,15 +1,15 @@
 <.header>
-  Listing Posts
-  <.form :let={f} class="search-form" for={%{}} action={~p"/search"} method="get">
-    <.input type="text" field={f[:search_term]} />
-    <.button class="search-button" type="submit">Search</.button>
-  </.form>
+    Listing Posts
+    <.form :let={f} for={%{}} action={~p"/search"}>
+        <.input type="text" field={f[:search_term]}/>
+        <.button type="submit" >Search</.button>
+    </.form>
 
-  <:actions>
-    <.link href={~p"/posts/new"}>
-      <.button>New Post</.button>
-    </.link>
-  </:actions>
+    <:actions>
+        <.link href={~p"/posts/new"}>
+            <.button>New Post</.button>
+        </.link>
+    </:actions>
 </.header>
 
 <.table id="posts" rows={@posts} row_click={&JS.navigate(~p"/posts/#{&1}")}>

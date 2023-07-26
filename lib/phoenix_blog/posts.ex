@@ -18,18 +18,24 @@ defmodule PhoenixBlog.Posts do
 
   """
   def list_posts do
-    Repo.all(Post)
+    now = DateTime.utc_now()
+
+    from(p in Post,
+      where: p.visible == true,
+      where: is_nil(p.published_on) or p.published_on < ^now,
+      order_by: [desc: p.updated_at]
+    )
+    |> Repo.all()
   end
 
   def filter_posts(search_term) do
     search_term = "%#{search_term}%"
-    query =
-      from(p in Post,
-        where: ilike(p.title, ^search_term),
-        order_by: [desc: p.inserted_at]
-      )
 
-    Repo.all(query)
+    from(p in Post,
+      where: ilike(p.title, ^search_term),
+      order_by: [desc: p.inserted_at]
+    )
+    |> Repo.all()
   end
 
   @doc """

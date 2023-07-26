@@ -4,8 +4,9 @@ defmodule PhoenixBlog.Posts.Post do
 
   schema "posts" do
     field :content, :string
-    field :subtitle, :string
     field :title, :string
+    field :published_on, :date
+    field :visible, :boolean
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule PhoenixBlog.Posts.Post do
   @doc false
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:title, :subtitle, :content])
-    |> validate_required([:title, :subtitle, :content])
+    |> cast(attrs, [:title, :content, :visible, :published_on])
+    |> validate_required([:title, :content])
   end
 end

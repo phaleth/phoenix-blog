@@ -12,8 +12,9 @@ defmodule PhoenixBlog.PostsFixtures do
       attrs
       |> Enum.into(%{
         content: "some content",
-        subtitle: "some subtitle",
-        title: "some title"
+        title: "some title",
+        visible: true,
+        published_on: nil
       })
       |> PhoenixBlog.Posts.create_post()
 

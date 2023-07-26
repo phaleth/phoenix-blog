@@ -15,6 +15,7 @@ defmodule PhoenixBlog.Posts.Post do
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:title, :content, :visible, :published_on])
+    # |> validate_change( TODO )
     |> validate_required([:title, :content])
   end
 end

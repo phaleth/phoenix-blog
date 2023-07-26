@@ -11,12 +11,12 @@ defmodule PhoenixBlog.PostsTest do
     @invalid_attrs %{content: nil, title: nil}
 
     test "list_posts/0 returns all posts" do
-      post = post_fixture()
+      post = post_fixture(%{visible: true, published_on: nil})
       assert Posts.list_posts() == [post]
     end
 
     test "list_posts/0 returns all posts except visible" do
-      post = post_fixture()
+      post = post_fixture(%{visible: true, published_on: nil})
       _post2 = post_fixture(%{visible: false})
       assert Posts.list_posts() == [post]
     end

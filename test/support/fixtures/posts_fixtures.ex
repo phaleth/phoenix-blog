@@ -13,8 +13,8 @@ defmodule PhoenixBlog.PostsFixtures do
       |> Enum.into(%{
         content: "some content",
         title: "some title",
-        visible: true,
-        published_on: nil
+        visible: Enum.random([true, false]),
+        published_on: DateTime.utc_now()
       })
       |> PhoenixBlog.Posts.create_post()
 

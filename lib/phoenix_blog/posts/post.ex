@@ -3,10 +3,10 @@ defmodule PhoenixBlog.Posts.Post do
   import Ecto.Changeset
 
   schema "posts" do
-    field :content, :string
-    field :title, :string
-    field :published_on, :date
-    field :visible, :boolean
+    field(:content, :string)
+    field(:title, :string)
+    field(:published_on, :utc_datetime)
+    field(:visible, :boolean, default: true)
 
     timestamps()
   end

@@ -23,7 +23,7 @@ defmodule PhoenixBlog.Posts do
     from(p in Post,
       where: p.visible == true,
       where: is_nil(p.published_on) or p.published_on < ^now,
-      order_by: [desc: p.updated_at]
+      order_by: [desc: p.published_on]
     )
     |> Repo.all()
   end

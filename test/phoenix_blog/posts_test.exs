@@ -21,6 +21,16 @@ defmodule PhoenixBlog.PostsTest do
       assert Posts.list_posts() == [post]
     end
 
+    test "list_posts/0 returns posts displayed as from newest -> oldest" do
+      post =
+        post_fixture(%{visible: true, published_on: DateTime.utc_now() |> DateTime.add(-1, :day)})
+
+      _post2 =
+        post_fixture(%{visible: true, published_on: DateTime.utc_now() |> DateTime.add(1, :day)})
+
+      assert Posts.list_posts() == [post]
+    end
+
     test "get_post!/1 returns the post with given id" do
       post = post_fixture()
       assert Posts.get_post!(post.id) == post

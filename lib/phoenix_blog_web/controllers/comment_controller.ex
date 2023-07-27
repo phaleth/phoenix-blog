@@ -53,10 +53,11 @@ defmodule PhoenixBlogWeb.CommentController do
 
   def delete(conn, %{"id" => id}) do
     comment = Comments.get_comment!(id)
+
     {:ok, _comment} = Comments.delete_comment(comment)
 
     conn
     |> put_flash(:info, "Comment deleted successfully.")
-    |> redirect(to: ~p"/comments")
+    |> redirect(to: ~p"/posts/#{comment.post_id}")
   end
 end

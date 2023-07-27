@@ -26,8 +26,11 @@
     Comment <%= comment.id %>
     <:subtitle>This is a comment record from your database.</:subtitle>
     <:actions>
-      <.link href={~p"/comments/#{comment}/edit"}>
+      <.link href={~p"/comments/#{comment.id}/edit"}>
         <.button>Edit comment</.button>
+      </.link>
+      <.link href={~p"/comments/#{comment.id}"} method="delete">
+        <.button>Delete comment</.button>
       </.link>
     </:actions>
   </.header>

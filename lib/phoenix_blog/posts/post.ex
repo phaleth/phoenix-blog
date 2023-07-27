@@ -7,6 +7,7 @@ defmodule PhoenixBlog.Posts.Post do
     field(:title, :string)
     field(:published_on, :utc_datetime)
     field(:visible, :boolean, default: true)
+    has_many :comments, PhoenixBlog.Comments.Comment
 
     timestamps()
   end

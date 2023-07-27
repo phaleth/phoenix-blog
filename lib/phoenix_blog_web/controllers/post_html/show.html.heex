@@ -10,8 +10,9 @@
 
 <.list>
   <:item title="Title"><%= @post.title %></:item>
-  <:item title="Subtitle"><%= @post.subtitle %></:item>
   <:item title="Content"><%= @post.content %></:item>
+  <:item title="Visible"><%= @post.visible %></:item>
+  <:item title="Published On"><%=if is_nil(@post.published_on), do: @post.published_on, else: Calendar.strftime(@post.published_on, "%A %b. %d, %Y @ %I:%M") %></:item>
 </.list>
 
 <.back navigate={~p"/posts"}>Back to posts</.back>

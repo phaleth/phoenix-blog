@@ -16,10 +16,10 @@ defmodule PhoenixBlogWeb.CommentController do
 
   def create(conn, %{"comment" => comment_params}) do
     case Comments.create_comment(comment_params) do
-      {:ok, comment} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Comment created successfully.")
-        |> redirect(to: ~p"/comments/#{comment}")
+        |> redirect(to: ~p"/posts/#{comment_params["post_id"]}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)

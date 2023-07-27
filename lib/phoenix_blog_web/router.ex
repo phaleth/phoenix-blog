@@ -20,6 +20,7 @@ defmodule PhoenixBlogWeb.Router do
     get "/", PageController, :home
     resources "/posts", PostController
     get "/search", PostController, :search
+    resources "/comments", CommentController, only: [:create, :update, :delete]
   end
 
   # Other scopes may use custom stacks.

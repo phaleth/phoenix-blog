@@ -2,6 +2,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   use PhoenixBlogWeb.ConnCase
 
   import PhoenixBlog.CommentsFixtures
+  import PhoenixBlog.PostsFixtures
 
   @create_attrs %{content: "some content"}
   @update_attrs %{content: "some updated content"}
@@ -69,7 +70,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
 
     test "deletes chosen comment", %{conn: conn, comment: comment} do
       conn = delete(conn, ~p"/comments/#{comment}")
-      assert redirected_to(conn) == ~p"/comments"
+      assert redirected_to(conn) =~ ~p"/posts"
 
       assert_error_sent 404, fn ->
         get(conn, ~p"/comments/#{comment}")
@@ -78,7 +79,8 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   end
 
   defp create_comment(_) do
-    comment = comment_fixture()
+    post = post_fixture()
+    comment = comment_fixture(post_id: post.id)
     %{comment: comment}
   end
 end

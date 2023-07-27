@@ -3,4 +3,10 @@
   <:subtitle>Use this form to manage comment records in your database.</:subtitle>
 </.header>
 
+<.comment_form
+  post_id={@comment.post_id}
+  changeset={@changeset}
+  action={~p"/comments/#{@comment.id}"}
+/>
+
 <.back navigate={~p"/comments"}>Back to comments</.back>

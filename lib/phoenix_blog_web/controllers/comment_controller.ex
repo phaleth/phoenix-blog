@@ -33,7 +33,9 @@ defmodule PhoenixBlogWeb.CommentController do
 
   def edit(conn, %{"id" => id}) do
     comment = Comments.get_comment!(id)
+
     changeset = Comments.change_comment(comment)
+
     render(conn, :edit, comment: comment, changeset: changeset)
   end
 

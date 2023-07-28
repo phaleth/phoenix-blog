@@ -24,7 +24,8 @@ defmodule PhoenixBlog.CommentsTest do
     end
 
     test "create_comment/1 with valid data creates a comment" do
-      valid_attrs = %{content: "some content", post_id: 1}
+      post = post_fixture()
+      valid_attrs = %{content: "some content", post_id: post.id}
 
       assert {:ok, %Comment{} = comment} = Comments.create_comment(valid_attrs)
       assert comment.content == "some content"

@@ -12,7 +12,32 @@
   <:item title="Title"><%= @post.title %></:item>
   <:item title="Content"><%= @post.content %></:item>
   <:item title="Visible"><%= @post.visible %></:item>
-  <:item title="Published On"><%=if is_nil(@post.published_on), do: @post.published_on, else: Calendar.strftime(@post.published_on, "%A %b. %d, %Y @ %I:%M") %></:item>
+  <:item title="Published On">
+    <%= if is_nil(@post.published_on),
+      do: @post.published_on,
+      else: Calendar.strftime(@post.published_on, "%A %b. %d, %Y @ %I:%M") %>
+  </:item>
 </.list>
 
 <.back navigate={~p"/posts"}>Back to posts</.back>
+
+<%= for comment <- @post.comments do %>
+  <.header>
+    Comment <%= comment.id %>
+    <:subtitle>This is a comment record from your database.</:subtitle>
+    <:actions>
+      <.link href={~p"/comments/#{comment.id}/edit"}>
+        <.button>Edit comment</.button>
+      </.link>
+      <.link href={~p"/comments/#{comment.id}"} method="delete">
+        <.button>Delete comment</.button>
+      </.link>
+    </:actions>
+  </.header>
+
+  <.list>
+    <:item title="Content"><%= comment.content %></:item>
+  </.list>
+<% end %>
+
+<.comment_form post_id={@post.id} changeset={@comment_changeset} action={~p"/comments"} />

@@ -46,7 +46,7 @@ defmodule PhoenixBlogWeb.CommentController do
       {:ok, comment} ->
         conn
         |> put_flash(:info, "Comment updated successfully.")
-        |> redirect(to: ~p"/comments/#{comment}")
+        |> redirect(to: ~p"/posts/#{comment.post_id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, comment: comment, changeset: changeset)

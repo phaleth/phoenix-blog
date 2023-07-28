@@ -3,6 +3,7 @@ defmodule PhoenixBlog.Repo.Migrations.UpdatePostIdOnComments do
 
   def change do
     execute "ALTER TABLE comments DROP CONSTRAINT comments_post_id_fkey"
+    # ecto way drop constraint(:comments, "comments_post_id_fkey")
 
     alter table(:comments) do
       modify :post_id, references(:posts, on_delete: :delete_all), null: false

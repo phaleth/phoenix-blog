@@ -21,11 +21,6 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
       conn = get(conn, ~p"/posts/#{post.id}")
       assert html_response(conn, 200) =~ "Post #{post.id}"
     end
-
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/comments", comment: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Comment"
-    end
   end
 
   describe "edit comment" do

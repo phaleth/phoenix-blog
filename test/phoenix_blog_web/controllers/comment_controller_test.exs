@@ -14,7 +14,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
       create_comment = Map.merge(@create_attrs, %{post_id: post.id})
       conn = post(conn, ~p"/comments", comment: create_comment)
 
-      assert %{id: id} = redirected_params(conn)
+      assert %{id: _id} = redirected_params(conn)
 
       assert redirected_to(conn) == ~p"/posts/#{post.id}"
 
@@ -57,13 +57,12 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   describe "delete comment" do
     setup [:create_comment]
 
-    @tag :skip
     test "deletes chosen comment", %{conn: conn, comment: comment} do
       conn = delete(conn, ~p"/comments/#{comment}")
-      assert redirected_to(conn) =~ ~p"/posts"
+      assert redirected_to(conn) =~ ~p"/posts/#{comment.post_id}"
 
       assert_error_sent 404, fn ->
-        get(conn, ~p"/comments/#{comment}")
+        get(conn, ~p"/comments/#{comment}/edit")
       end
     end
   end

@@ -2,7 +2,6 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   use PhoenixBlogWeb.ConnCase
 
   import PhoenixBlog.PostsFixtures
-  import PhoenixBlog.CommentsFixtures
 
   @create_attrs %{content: "some content", subtitle: "some subtitle", title: "some title"}
   @update_attrs %{

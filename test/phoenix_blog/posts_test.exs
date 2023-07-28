@@ -2,6 +2,7 @@ defmodule PhoenixBlog.PostsTest do
   use PhoenixBlog.DataCase
 
   alias PhoenixBlog.Posts
+  alias PhoenixBlog.Comments
 
   describe "posts" do
     alias PhoenixBlog.Posts.Post
@@ -26,7 +27,8 @@ defmodule PhoenixBlog.PostsTest do
       past =
         post_fixture(%{visible: true, published_on: DateTime.utc_now() |> DateTime.add(-1, :day)})
 
-      present = post_fixture(published_on: DateTime.utc_now() |> DateTime.add(-1, :second))
+      present =
+        post_fixture(visible: true, published_on: DateTime.utc_now() |> DateTime.add(-1, :minute))
 
       _future =
         post_fixture(%{visible: true, published_on: DateTime.utc_now() |> DateTime.add(1, :day)})
@@ -75,6 +77,15 @@ defmodule PhoenixBlog.PostsTest do
       post = post_fixture()
       assert {:ok, %Post{}} = Posts.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
+    end
+
+    test "delete_post/1 deletes the post and associated comments" do
+      post = post_fixture()
+      comment = comment_fixture(post_id: post.id)
+      assert {:ok, %Post{}} = Posts.delete_post(post)
+
+      assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
+      assert_raise Ecto.NoResultsError, fn -> Comments.get_comment!(comment.id) end
     end
 
     test "change_post/1 returns a post changeset" do

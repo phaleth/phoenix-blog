@@ -29,7 +29,7 @@
       <.link href={~p"/comments/#{comment.id}/edit"}>
         <.button>Edit comment</.button>
       </.link>
-      <.link href={~p"/comments/#{comment.id}"} method="delete">
+      <.link href={~p"/comments/#{comment.id}"} method="delete" data-confirm="Are you sure?">
         <.button>Delete comment</.button>
       </.link>
     </:actions>

@@ -2,14 +2,14 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   use PhoenixBlogWeb.ConnCase
 
   import PhoenixBlog.PostsFixtures
+  import PhoenixBlog.AccountsFixtures
 
-  @create_attrs %{content: "some content", subtitle: "some subtitle", title: "some title"}
+  @create_attrs %{content: "some content", title: "some title"}
   @update_attrs %{
     content: "some updated content",
-    subtitle: "some updated subtitle",
     title: "some updated title"
   }
-  @invalid_attrs %{content: nil, subtitle: nil, title: nil}
+  @invalid_attrs %{content: nil, title: nil}
 
   describe "index" do
     test "lists all posts", %{conn: conn} do
@@ -20,14 +20,21 @@ defmodule PhoenixBlogWeb.PostControllerTest do
 
   describe "new post" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, ~p"/posts/new")
+      user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get(~p"/posts/new")
+
       assert html_response(conn, 200) =~ "New Post"
     end
   end
 
   describe "create post" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/posts", post: @create_attrs)
+      user = user_fixture()
+      conn = post(conn, ~p"/posts", post: Map.merge(%{user_id: user.id}, @create_attrs))
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/posts/#{id}"
@@ -37,7 +44,13 @@ defmodule PhoenixBlogWeb.PostControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/posts", post: @invalid_attrs)
+      user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> post(~p"/posts", post: Map.merge(%{user_id: user.id}, @invalid_attrs))
+
       assert html_response(conn, 200) =~ "New Post"
     end
   end
@@ -46,7 +59,13 @@ defmodule PhoenixBlogWeb.PostControllerTest do
     setup [:create_post]
 
     test "renders form for editing chosen post", %{conn: conn, post: post} do
-      conn = get(conn, ~p"/posts/#{post}/edit")
+      user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get(~p"/posts/#{post}/edit")
+
       assert html_response(conn, 200) =~ "Edit Post"
     end
   end
@@ -63,7 +82,13 @@ defmodule PhoenixBlogWeb.PostControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, post: post} do
-      conn = put(conn, ~p"/posts/#{post}", post: @invalid_attrs)
+      user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> put(~p"/posts/#{post}", post: @invalid_attrs)
+
       assert html_response(conn, 200) =~ "Edit Post"
     end
   end
@@ -83,26 +108,30 @@ defmodule PhoenixBlogWeb.PostControllerTest do
 
   describe "search posts" do
     test "search for posts - non-matching", %{conn: conn} do
-      post = post_fixture(title: "some title")
+      user = user_fixture()
+      post = post_fixture(title: "some title", user_id: user.id)
       conn = get(conn, ~p"/search", search_term: "Non-Matching")
       refute html_response(conn, 200) =~ post.title
     end
 
     test "search for posts - exact match", %{conn: conn} do
-      post = post_fixture(title: "some title")
+      user = user_fixture()
+      post = post_fixture(title: "some title", user_id: user.id)
       conn = get(conn, ~p"/search", search_term: "some title")
       assert html_response(conn, 200) =~ post.title
     end
 
     test "search for posts - partial match", %{conn: conn} do
-      post = post_fixture(title: "some title")
+      user = user_fixture()
+      post = post_fixture(title: "some title", user_id: user.id)
       conn = get(conn, ~p"/search", search_term: "itl")
       assert html_response(conn, 200) =~ post.title
     end
   end
 
   defp create_post(_) do
-    post = post_fixture()
+    user = user_fixture()
+    post = post_fixture(user_id: user.id)
     %{post: post}
   end
 end

@@ -9,41 +9,60 @@ defmodule PhoenixBlog.PostsTest do
 
     import PhoenixBlog.PostsFixtures
     import PhoenixBlog.CommentsFixtures
+    import PhoenixBlog.AccountsFixtures
 
     @invalid_attrs %{content: nil, title: nil}
 
     test "list_posts/0 returns all posts" do
-      post = post_fixture(%{visible: true, published_on: nil})
+      user = user_fixture()
+      post = post_fixture(visible: true, published_on: nil, user_id: user.id)
       assert Posts.list_posts() == [post]
     end
 
     test "list_posts/0 returns all posts except visible" do
-      post = post_fixture(%{visible: true, published_on: nil})
-      _post2 = post_fixture(%{visible: false})
+      user = user_fixture()
+      post = post_fixture(visible: true, published_on: nil, user_id: user.id)
+      _post2 = post_fixture(visible: false, user_id: user.id)
       assert Posts.list_posts() == [post]
     end
 
     test "list_posts/0 returns posts displayed as from newest -> oldest" do
+      user = user_fixture()
+
       past =
-        post_fixture(%{visible: true, published_on: DateTime.utc_now() |> DateTime.add(-1, :day)})
+        post_fixture(
+          user_id: user.id,
+          visible: true,
+          published_on: DateTime.utc_now() |> DateTime.add(-1, :day)
+        )
 
       present =
-        post_fixture(visible: true, published_on: DateTime.utc_now() |> DateTime.add(-1, :minute))
+        post_fixture(
+          user_id: user.id,
+          visible: true,
+          published_on: DateTime.utc_now() |> DateTime.add(-1, :minute)
+        )
 
       _future =
-        post_fixture(%{visible: true, published_on: DateTime.utc_now() |> DateTime.add(1, :day)})
+        post_fixture(
+          user_id: user.id,
+          visible: true,
+          published_on: DateTime.utc_now() |> DateTime.add(1, :day)
+        )
 
       assert Posts.list_posts() == [present, past]
     end
 
     test "get_post!/1 returns the post with given id" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
 
       assert Posts.get_post!(post.id) == Repo.preload(post, :comments)
     end
 
     test "create_post/1 with valid data creates a post" do
-      valid_attrs = %{content: "some content", title: "some title"}
+      user = user_fixture()
+      valid_attrs = %{content: "some content", title: "some title", user_id: user.id}
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
       assert post.content == "some content"
@@ -55,7 +74,8 @@ defmodule PhoenixBlog.PostsTest do
     end
 
     test "update_post/2 with valid data updates the post" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
 
       update_attrs = %{
         content: "some updated content",
@@ -68,20 +88,24 @@ defmodule PhoenixBlog.PostsTest do
     end
 
     test "update_post/2 with invalid data returns error changeset" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
+
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
       assert Repo.preload(post, :comments) == Posts.get_post!(post.id)
     end
 
     test "delete_post/1 deletes the post" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
       assert {:ok, %Post{}} = Posts.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
     end
 
     test "delete_post/1 deletes the post and associated comments" do
-      post = post_fixture()
-      comment = comment_fixture(post_id: post.id)
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
+      comment = comment_fixture(post_id: post.id, user_id: user.id)
       assert {:ok, %Post{}} = Posts.delete_post(post)
 
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
@@ -89,13 +113,15 @@ defmodule PhoenixBlog.PostsTest do
     end
 
     test "change_post/1 returns a post changeset" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
       assert %Ecto.Changeset{} = Posts.change_post(post)
     end
 
     test "create_post/1 with valid data creates and bunch of content then delete_post/1" do
+      user = user_fixture()
       some_content = Enum.to_list(1..1_000) |> Enum.join(", ")
-      valid_attrs = %{content: some_content, title: "some title"}
+      valid_attrs = %{content: some_content, title: "some title", user_id: user.id}
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
       assert post.content == some_content
@@ -104,7 +130,8 @@ defmodule PhoenixBlog.PostsTest do
     end
 
     test "filter_posts/1 filters posts by partial and case-insensitive title" do
-      post = post_fixture(title: "Title")
+      user = user_fixture()
+      post = post_fixture(title: "Title", user_id: user.id)
 
       # non-matching
       assert Posts.filter_posts("Non-Matching") == []

@@ -3,6 +3,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
 
   import PhoenixBlog.CommentsFixtures
   import PhoenixBlog.PostsFixtures
+  import PhoenixBlog.AccountsFixtures
 
   @create_attrs %{content: "some content"}
   @update_attrs %{content: "some updated content"}
@@ -10,8 +11,9 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
 
   describe "create comment" do
     test "redirects to post show page", %{conn: conn} do
-      post = post_fixture()
-      create_comment = Map.merge(@create_attrs, %{post_id: post.id})
+      user = user_fixture()
+      post = post_fixture(user_id: user.id)
+      create_comment = Map.merge(@create_attrs, %{post_id: post.id, user_id: user.id})
       conn = post(conn, ~p"/comments", comment: create_comment)
 
       assert %{id: _id} = redirected_params(conn)
@@ -63,8 +65,9 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   end
 
   defp create_comment(_) do
-    post = post_fixture()
-    comment = comment_fixture(post_id: post.id)
+    user = user_fixture()
+    post = post_fixture(user_id: user.id)
+    comment = comment_fixture(post_id: post.id, user_id: user.id)
     %{comment: comment}
   end
 end

@@ -5,6 +5,7 @@ defmodule PhoenixBlog.Comments.Comment do
   schema "comments" do
     field :content, :string
     belongs_to :post, PhoenixBlog.Posts.Post
+    belongs_to :user, PhoenixBlog.Accounts.User
 
     timestamps()
   end
@@ -12,8 +13,9 @@ defmodule PhoenixBlog.Comments.Comment do
   @doc false
   def changeset(comment, attrs) do
     comment
-    |> cast(attrs, [:content, :post_id])
-    |> validate_required([:content, :post_id])
+    |> cast(attrs, [:content, :post_id, :user_id])
+    |> validate_required([:content, :post_id, :user_id])
     |> foreign_key_constraint(:post_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

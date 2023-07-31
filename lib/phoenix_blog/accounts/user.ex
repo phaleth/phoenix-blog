@@ -8,6 +8,8 @@ defmodule PhoenixBlog.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :username, :string
+    has_many :comments, PhoenixBlog.Comments.Comment
+    has_many :posts, PhoenixBlog.Posts.Post
 
     timestamps()
   end

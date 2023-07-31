@@ -1,6 +1,8 @@
 defmodule PhoenixBlogWeb.PostController do
   use PhoenixBlogWeb, :controller
 
+  alias PhoenixBlog.Comments
+  alias PhoenixBlog.Comments.Comment
   alias PhoenixBlog.Posts
   alias PhoenixBlog.Posts.Post
 
@@ -28,7 +30,10 @@ defmodule PhoenixBlogWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Posts.get_post!(id)
-    render(conn, :show, post: post)
+
+    comment_changeset = Comments.change_comment(%Comment{})
+
+    render(conn, :show, post: post, comment_changeset: comment_changeset)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -63,10 +68,11 @@ defmodule PhoenixBlogWeb.PostController do
   def search(conn, params) do
     search_term = Map.get(params, "search_term", "")
 
-    posts = case search_term do
-      "" -> Posts.list_posts()
-      _ -> Posts.filter_posts(search_term)
-    end
+    posts =
+      case search_term do
+        "" -> Posts.list_posts()
+        _ -> Posts.filter_posts(search_term)
+      end
 
     render(conn, :index, posts: posts)
   end

@@ -3,9 +3,11 @@ defmodule PhoenixBlog.Posts.Post do
   import Ecto.Changeset
 
   schema "posts" do
-    field :content, :string
-    field :subtitle, :string
-    field :title, :string
+    field(:content, :string)
+    field(:title, :string)
+    field(:published_on, :utc_datetime)
+    field(:visible, :boolean, default: true)
+    has_many :comments, PhoenixBlog.Comments.Comment
 
     timestamps()
   end
@@ -13,7 +15,8 @@ defmodule PhoenixBlog.Posts.Post do
   @doc false
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:title, :subtitle, :content])
-    |> validate_required([:title, :subtitle, :content])
+    |> cast(attrs, [:title, :content, :visible, :published_on])
+    # |> validate_change( TODO )
+    |> validate_required([:title, :content])
   end
 end

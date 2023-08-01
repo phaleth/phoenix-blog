@@ -62,9 +62,7 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   describe "edit post" do
     setup [:create_post]
 
-    test "renders form for editing chosen post", %{conn: conn, post: post} do
-      user = user_fixture()
-
+    test "renders form for editing chosen post", %{conn: conn, post: post, user: user} do
       conn =
         conn
         |> log_in_user(user)
@@ -72,13 +70,23 @@ defmodule PhoenixBlogWeb.PostControllerTest do
 
       assert html_response(conn, 200) =~ "Edit Post"
     end
+
+    test "doesnt renders form when not owner", %{conn: conn, post: post} do
+      user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get(~p"/posts/#{post}/edit")
+
+      assert redirected_to(conn, 302) =~ "/posts/#{post.id}"
+    end
   end
 
   describe "update post" do
     setup [:create_post]
 
-    test "redirects when data is valid", %{conn: conn, post: post} do
-      user = user_fixture()
+    test "redirects when data is valid", %{conn: conn, post: post, user: user} do
       conn = conn |> log_in_user(user) |> put(~p"/posts/#{post}", post: @update_attrs)
       assert redirected_to(conn) == ~p"/posts/#{post}"
 
@@ -86,9 +94,16 @@ defmodule PhoenixBlogWeb.PostControllerTest do
       assert html_response(conn, 200) =~ "some updated content"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, post: post} do
+    test "redirects when user doesnt own post", %{conn: conn, post: post} do
       user = user_fixture()
+      conn = conn |> log_in_user(user) |> put(~p"/posts/#{post}", post: @update_attrs)
+      assert redirected_to(conn) == ~p"/posts/#{post}"
 
+      conn = get(conn, ~p"/posts/#{post}")
+      assert html_response(conn, 200) =~ "You can only edit or delete your own posts."
+    end
+
+    test "renders errors when data is invalid", %{conn: conn, post: post, user: user} do
       conn =
         conn
         |> log_in_user(user)
@@ -106,14 +121,19 @@ defmodule PhoenixBlogWeb.PostControllerTest do
       assert redirected_to(conn) == ~p"/users/log_in"
     end
 
-    test "login user deletes chosen post", %{conn: conn, post: post} do
-      user = user_fixture()
+    test "login user deletes chosen post", %{conn: conn, post: post, user: user} do
       conn = conn |> log_in_user(user) |> delete(~p"/posts/#{post}")
       assert redirected_to(conn) == ~p"/posts"
 
       assert_error_sent 404, fn ->
         get(conn, ~p"/posts/#{post}")
       end
+    end
+
+    test "login user cant delete post doesnt own", %{conn: conn, post: post} do
+      user = user_fixture()
+      conn = conn |> log_in_user(user) |> delete(~p"/posts/#{post}")
+      assert redirected_to(conn) == ~p"/posts/#{post.id}"
     end
   end
 
@@ -143,6 +163,6 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   defp create_post(_) do
     user = user_fixture()
     post = post_fixture(user_id: user.id)
-    %{post: post}
+    %{post: post, user: user}
   end
 end

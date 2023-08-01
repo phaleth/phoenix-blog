@@ -13,8 +13,14 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
     test "redirects to post show page", %{conn: conn} do
       user = user_fixture()
       post = post_fixture(user_id: user.id)
-      create_comment = Map.merge(@create_attrs, %{post_id: post.id, user_id: user.id})
-      conn = post(conn, ~p"/comments", comment: create_comment)
+
+      create_comment =
+        Map.merge(@create_attrs, %{post_id: post.id, user_id: user.id})
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> post(~p"/comments", comment: create_comment)
 
       assert %{id: _id} = redirected_params(conn)
 
@@ -28,8 +34,8 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   describe "edit comment" do
     setup [:create_comment]
 
-    test "renders form for editing chosen comment", %{conn: conn, comment: comment} do
-      conn = get(conn, ~p"/comments/#{comment}/edit")
+    test "renders form for editing chosen comment", %{conn: conn, comment: comment, user: user} do
+      conn = conn |> log_in_user(user) |> get(~p"/comments/#{comment}/edit")
       assert html_response(conn, 200) =~ "Edit Comment"
     end
   end
@@ -37,8 +43,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   describe "update comment" do
     setup [:create_comment]
 
-    test "redirects when data is valid", %{conn: conn, comment: comment} do
-      user = user_fixture()
+    test "redirects when data is valid", %{conn: conn, comment: comment, user: user} do
       conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @update_attrs)
       assert redirected_to(conn) == ~p"/posts/#{comment.post_id}"
 
@@ -46,8 +51,17 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
       assert html_response(conn, 200) =~ "some updated content"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, comment: comment} do
-      conn = put(conn, ~p"/comments/#{comment}", comment: @invalid_attrs)
+    test "redirects when doesnt own the comment", %{conn: conn, comment: comment} do
+      user = user_fixture()
+      conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @update_attrs)
+      assert redirected_to(conn) == ~p"/posts/#{comment.post_id}"
+
+      conn = get(conn, ~p"/posts/#{comment.post_id}")
+      assert html_response(conn, 200) =~ "You can only edit or delete your own comments"
+    end
+
+    test "renders errors when data is invalid", %{conn: conn, comment: comment, user: user} do
+      conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Comment"
     end
   end
@@ -55,8 +69,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
   describe "delete comment" do
     setup [:create_comment]
 
-    test "deletes chosen comment", %{conn: conn, comment: comment} do
-      user = user_fixture()
+    test "deletes chosen comment", %{conn: conn, comment: comment, user: user} do
       conn = conn |> log_in_user(user) |> delete(~p"/comments/#{comment}")
       assert redirected_to(conn) =~ ~p"/posts/#{comment.post_id}"
 
@@ -70,6 +83,6 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
     user = user_fixture()
     post = post_fixture(user_id: user.id)
     comment = comment_fixture(post_id: post.id, user_id: user.id)
-    %{comment: comment}
+    %{comment: comment, user: user}
   end
 end

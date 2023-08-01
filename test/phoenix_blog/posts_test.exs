@@ -57,7 +57,7 @@ defmodule PhoenixBlog.PostsTest do
       user = user_fixture()
       post = post_fixture(user_id: user.id)
 
-      assert Posts.get_post!(post.id) == Repo.preload(post, :comments)
+      assert Posts.get_post!(post.id) == Repo.preload(post, [:user, comments: [:user]])
     end
 
     test "create_post/1 with valid data creates a post" do

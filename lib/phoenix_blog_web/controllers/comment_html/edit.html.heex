@@ -3,11 +3,13 @@
   <:subtitle>Use this form to manage comment records in your database.</:subtitle>
 </.header>
 
-<.comment_form
-  post_id={@comment.post_id}
-  changeset={@changeset}
-  action={~p"/comments/#{@comment.id}"}
-  current_user={@current_user}
-/>
+<%= if assigns[:current_user] do %>
+  <.comment_form
+    post_id={@comment.post_id}
+    changeset={@changeset}
+    action={~p"/comments/#{@comment.id}"}
+    current_user={@current_user}
+  />
+<% end %>
 
 <.back navigate={~p"/posts/#{@comment.post_id}"}>Back to post</.back>

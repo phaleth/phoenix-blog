@@ -17,20 +17,10 @@ defmodule PhoenixBlogWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", PhoenixBlogWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-    resources "/posts", PostController
-    get "/search", PostController, :search
-    resources "/comments", CommentController, only: [:create, :edit, :update, :delete]
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", PhoenixBlogWeb do
   #   pipe_through :api
   # end
-
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:phoenix_blog, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
@@ -69,10 +59,18 @@ defmodule PhoenixBlogWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    get "/posts/new", PostController, :new
+    resources "/posts", PostController, except: [:index, :show, :new]
+    resources "/comments", CommentController, only: [:new, :edit, :create, :delete, :update]
   end
 
   scope "/", PhoenixBlogWeb do
     pipe_through [:browser]
+
+    resources "/posts", PostController, only: [:index, :show]
+
+    get "/", PageController, :home
+    get "/search", PostController, :search
 
     delete "/users/log_out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new

@@ -32,9 +32,13 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   end
 
   describe "create post" do
-    test "redirects to show when data is valid", %{conn: conn} do
+    test "Auth user redirects to show when data is valid", %{conn: conn} do
       user = user_fixture()
-      conn = post(conn, ~p"/posts", post: Map.merge(%{user_id: user.id}, @create_attrs))
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> post(~p"/posts", post: Map.merge(%{user_id: user.id}, @create_attrs))
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/posts/#{id}"
@@ -74,7 +78,8 @@ defmodule PhoenixBlogWeb.PostControllerTest do
     setup [:create_post]
 
     test "redirects when data is valid", %{conn: conn, post: post} do
-      conn = put(conn, ~p"/posts/#{post}", post: @update_attrs)
+      user = user_fixture()
+      conn = conn |> log_in_user(user) |> put(~p"/posts/#{post}", post: @update_attrs)
       assert redirected_to(conn) == ~p"/posts/#{post}"
 
       conn = get(conn, ~p"/posts/#{post}")
@@ -96,8 +101,14 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   describe "delete post" do
     setup [:create_post]
 
-    test "deletes chosen post", %{conn: conn, post: post} do
+    test "unauth user cant deletes chosen post", %{conn: conn, post: post} do
       conn = delete(conn, ~p"/posts/#{post}")
+      assert redirected_to(conn) == ~p"/users/log_in"
+    end
+
+    test "login user deletes chosen post", %{conn: conn, post: post} do
+      user = user_fixture()
+      conn = conn |> log_in_user(user) |> delete(~p"/posts/#{post}")
       assert redirected_to(conn) == ~p"/posts"
 
       assert_error_sent 404, fn ->

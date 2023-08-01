@@ -92,7 +92,12 @@ defmodule PhoenixBlog.PostsTest do
       post = post_fixture(user_id: user.id)
 
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
-      assert Repo.preload(post, :comments) == Posts.get_post!(post.id)
+
+      preloaded =
+        from(p in Post, preload: [:user, comments: [:user]])
+        |> Repo.get!(post.id)
+
+      assert preloaded == Posts.get_post!(post.id)
     end
 
     test "delete_post/1 deletes the post" do

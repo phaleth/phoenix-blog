@@ -38,6 +38,26 @@ defmodule PhoenixBlogWeb.Router do
     end
   end
 
+  ## App routes
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    resources "/posts", PostController, except: [:index, :show, :new]
+    resources "/comments", CommentController, only: [:new, :edit, :create, :delete, :update]
+
+    get "/posts/new", PostController, :new
+  end
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser]
+
+    resources "/posts", PostController, only: [:index, :show]
+
+    get "/", PageController, :home
+    get "/search", PostController, :search
+  end
+
   ## Authentication routes
 
   scope "/", PhoenixBlogWeb do
@@ -59,18 +79,10 @@ defmodule PhoenixBlogWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-    get "/posts/new", PostController, :new
-    resources "/posts", PostController, except: [:index, :show, :new]
-    resources "/comments", CommentController, only: [:new, :edit, :create, :delete, :update]
   end
 
   scope "/", PhoenixBlogWeb do
     pipe_through [:browser]
-
-    resources "/posts", PostController, only: [:index, :show]
-
-    get "/", PageController, :home
-    get "/search", PostController, :search
 
     delete "/users/log_out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new

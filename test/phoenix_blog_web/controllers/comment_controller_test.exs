@@ -38,7 +38,8 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
     setup [:create_comment]
 
     test "redirects when data is valid", %{conn: conn, comment: comment} do
-      conn = put(conn, ~p"/comments/#{comment}", comment: @update_attrs)
+      user = user_fixture()
+      conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @update_attrs)
       assert redirected_to(conn) == ~p"/posts/#{comment.post_id}"
 
       conn = get(conn, ~p"/posts/#{comment.post_id}")
@@ -55,7 +56,8 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
     setup [:create_comment]
 
     test "deletes chosen comment", %{conn: conn, comment: comment} do
-      conn = delete(conn, ~p"/comments/#{comment}")
+      user = user_fixture()
+      conn = conn |> log_in_user(user) |> delete(~p"/comments/#{comment}")
       assert redirected_to(conn) =~ ~p"/posts/#{comment.post_id}"
 
       assert_error_sent 404, fn ->

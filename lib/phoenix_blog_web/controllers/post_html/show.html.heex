@@ -17,6 +17,7 @@
       do: @post.published_on,
       else: Calendar.strftime(@post.published_on, "%A %b. %d, %Y @ %I:%M") %>
   </:item>
+  <:item title="Username"><%= @post.user.username %></:item>
 </.list>
 
 <.back navigate={~p"/posts"}>Back to posts</.back>
@@ -37,7 +38,15 @@
 
   <.list>
     <:item title="Content"><%= comment.content %></:item>
+    <:item title="Username"><%= comment.user.username %></:item>
   </.list>
 <% end %>
 
-<.comment_form post_id={@post.id} changeset={@comment_changeset} action={~p"/comments"} />
+<%= if assigns[:current_user] do %>
+  <.comment_form
+    post_id={@post.id}
+    changeset={@comment_changeset}
+    current_user={@current_user}
+    action={~p"/comments"}
+  />
+<% end %>

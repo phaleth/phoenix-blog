@@ -11,7 +11,7 @@ config :phoenix_blog, PhoenixBlogWeb.Endpoint,
 # Configures Swoosh API Client
 # TODO: this makes production registration return Internal Server Error
 # config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: PhoenixBlog.Finch
-config :swoosh, api_client: false
+config :swoosh, :api_client, false
 
 # Disable Swoosh Local Memory Storage
 config :swoosh, local: false

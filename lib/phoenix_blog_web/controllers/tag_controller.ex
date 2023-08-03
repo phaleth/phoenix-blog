@@ -16,10 +16,10 @@ defmodule PhoenixBlogWeb.TagController do
 
   def create(conn, %{"tag" => tag_params}) do
     case Posts.create_tag(tag_params) do
-      {:ok, _tag_id} ->
+      {:ok, tag} ->
         conn
         |> put_flash(:info, "Tag created successfully.")
-        |> redirect(to: ~p"/tags")
+        |> redirect(to: ~p"/tags/#{tag}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)

@@ -19,14 +19,19 @@ defmodule PhoenixBlogWeb.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
-    case Posts.create_post(post_params) do
+    tags = Map.get(post_params, "tag_ids", []) |> Enum.map(&Posts.get_tag!/1)
+
+    case Posts.create_post(post_params, tags) do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
         |> redirect(to: ~p"/posts/#{post}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
+        render(conn, :new,
+          changeset: changeset,
+          tag_options: tag_options(Enum.map(tags, & &1.id))
+        )
     end
   end
 
@@ -51,15 +56,20 @@ defmodule PhoenixBlogWeb.PostController do
 
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Posts.get_post!(id)
+    tags = Map.get(post_params, "tag_ids", []) |> Enum.map(&Posts.get_tag!/1)
 
-    case Posts.update_post(post, post_params) do
+    case Posts.update_post(post, post_params, tags) do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post updated successfully.")
         |> redirect(to: ~p"/posts/#{post}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, post: post, changeset: changeset)
+        render(conn, :edit,
+          post: post,
+          changeset: changeset,
+          tag_options: tag_options(Enum.map(tags, & &1.id))
+        )
     end
   end
 
@@ -99,7 +109,7 @@ defmodule PhoenixBlogWeb.PostController do
   end
 
   defp tag_options(selected_ids \\ []) do
-    Tags.list_tags()
+    Posts.list_tags()
     |> Enum.map(fn tag ->
       [key: tag.name, value: tag.id, selected: tag.id in selected_ids]
     end)

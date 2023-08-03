@@ -1,6 +1,8 @@
 defmodule PhoenixBlogWeb.PostController do
   use PhoenixBlogWeb, :controller
 
+  plug :require_user_owns_post when action in [:edit, :update, :delete]
+
   alias PhoenixBlog.Comments
   alias PhoenixBlog.Comments.Comment
   alias PhoenixBlog.Posts
@@ -75,5 +77,19 @@ defmodule PhoenixBlogWeb.PostController do
       end
 
     render(conn, :index, posts: posts)
+  end
+
+  defp require_user_owns_post(conn, _params) do
+    post_id = String.to_integer(conn.path_params["id"])
+    post = Posts.get_post!(post_id)
+
+    if conn.assigns[:current_user].id == post.user_id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You can only edit or delete your own posts.")
+      |> redirect(to: ~p"/posts/#{post_id}")
+      |> halt()
+    end
   end
 end

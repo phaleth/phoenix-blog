@@ -669,6 +669,7 @@ defmodule PhoenixBlogWeb.CoreComponents do
   attr :changeset, Ecto.Changeset, required: true
   attr :action, :string, required: true
   attr :post_id, :integer, required: true
+  attr :current_user, PhoenixBlog.Accounts.User, required: true
 
   def comment_form(assigns) do
     ~H"""
@@ -676,6 +677,7 @@ defmodule PhoenixBlogWeb.CoreComponents do
       <.error :if={@changeset.action}>
         Oops, something went wrong! Please check the errors below.
       </.error>
+      <.input field={f[:user_id]} type="hidden" value={@current_user.id} />
       <.input field={f[:post_id]} type="hidden" value={@post_id} />
       <.input field={f[:content]} type="text" label="Content" />
       <:actions>

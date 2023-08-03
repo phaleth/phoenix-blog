@@ -1,6 +1,8 @@
 defmodule PhoenixBlogWeb.Router do
   use PhoenixBlogWeb, :router
 
+  import PhoenixBlogWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,26 +10,17 @@ defmodule PhoenixBlogWeb.Router do
     plug :put_root_layout, html: {PhoenixBlogWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", PhoenixBlogWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-    resources "/posts", PostController
-    get "/search", PostController, :search
-    resources "/comments", CommentController, only: [:create, :edit, :update, :delete]
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", PhoenixBlogWeb do
   #   pipe_through :api
   # end
-
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:phoenix_blog, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
@@ -43,5 +36,58 @@ defmodule PhoenixBlogWeb.Router do
       live_dashboard "/dashboard", metrics: PhoenixBlogWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## App routes
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    resources "/posts", PostController, except: [:index, :show, :new]
+    resources "/comments", CommentController, only: [:new, :edit, :create, :delete, :update]
+
+    get "/posts/new", PostController, :new
+  end
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser]
+
+    resources "/posts", PostController, only: [:index, :show]
+
+    get "/", PageController, :home
+    get "/search", PostController, :search
+  end
+
+  ## Authentication routes
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", PhoenixBlogWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 end

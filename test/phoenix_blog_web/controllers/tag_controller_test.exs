@@ -23,8 +23,11 @@ defmodule PhoenixBlogWeb.TagControllerTest do
   end
 
   describe "create tag" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/tags", tag: @create_attrs)
+    test "redirects to show when data is valid", %{conn: conn, user: user} do
+      conn =
+        conn
+        |> log_in_user(user)
+        |> post(~p"/tags", tag: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/tags/#{id}"

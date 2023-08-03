@@ -96,7 +96,7 @@ defmodule PhoenixBlog.PostsTest do
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
 
       preloaded =
-        from(p in Post, preload: [:user, comments: [:user]])
+        from(p in Post, preload: [:user, :tags, comments: [:user]])
         |> Repo.get!(post.id)
 
       assert preloaded == Posts.get_post!(post.id)

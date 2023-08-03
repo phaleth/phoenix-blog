@@ -45,7 +45,8 @@ defmodule PhoenixBlogWeb.Router do
 
     resources "/posts", PostController, except: [:index, :show, :new]
     resources "/comments", CommentController, only: [:new, :edit, :create, :delete, :update]
-    resources "/tags", CommentController, only: [:new, :edit, :create, :delete, :update]
+    get "/tags/new", TagController, :new
+    resources "/tags", TagController, only: [:edit, :create, :delete, :update]
 
     get "/posts/new", PostController, :new
   end
@@ -54,6 +55,7 @@ defmodule PhoenixBlogWeb.Router do
     pipe_through [:browser]
 
     resources "/posts", PostController, only: [:index, :show]
+    resources "/tags", TagController, only: [:index, :show]
 
     get "/", PageController, :home
     get "/search", PostController, :search

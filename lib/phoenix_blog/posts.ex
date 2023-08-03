@@ -54,7 +54,7 @@ defmodule PhoenixBlog.Posts do
 
   """
   def get_post!(id) do
-    from(p in Post, preload: [:user, comments: [:user]])
+    from(p in Post, preload: [:user, :tags, comments: [:user]])
     |> Repo.get!(id)
   end
 

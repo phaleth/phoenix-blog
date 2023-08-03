@@ -45,6 +45,7 @@ defmodule PhoenixBlogWeb.Router do
 
     resources "/posts", PostController, except: [:index, :show, :new]
     resources "/comments", CommentController, only: [:new, :edit, :create, :delete, :update]
+    resources "/tags", TagController, only: [:new, :edit, :create, :delete, :update]
 
     get "/posts/new", PostController, :new
   end

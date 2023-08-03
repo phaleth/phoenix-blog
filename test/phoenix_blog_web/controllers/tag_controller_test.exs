@@ -3,6 +3,7 @@ defmodule PhoenixBlogWeb.TagControllerTest do
 
   import PhoenixBlog.PostsFixtures
   import PhoenixBlog.TagsFixtures
+  import PhoenixBlog.AccountsFixtures
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -51,8 +52,8 @@ defmodule PhoenixBlogWeb.TagControllerTest do
   describe "update tag" do
     setup [:create_tag]
 
-    test "redirects when data is valid", %{conn: conn, tag: tag} do
-      conn = put(conn, ~p"/tags/#{tag}", tag: @update_attrs)
+    test "redirects when data is valid", %{conn: conn, tag: tag, user: user} do
+      conn = conn |> log_in_user(user) |> put(~p"/tags/#{tag}", tag: @update_attrs)
       assert redirected_to(conn) == ~p"/tags/#{tag}"
 
       conn = get(conn, ~p"/tags/#{tag}")
@@ -81,6 +82,7 @@ defmodule PhoenixBlogWeb.TagControllerTest do
 
   defp create_tag(_) do
     tag = tag_fixture()
-    %{tag: tag}
+    user = user_fixture()
+    %{tag: tag, user: user}
   end
 end

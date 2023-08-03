@@ -16,14 +16,14 @@ defmodule PhoenixBlog.PostsTest do
     test "list_posts/0 returns all posts" do
       user = user_fixture()
       post = post_fixture(visible: true, published_on: nil, user_id: user.id)
-      assert Posts.list_posts() == [post]
+      assert Repo.preload(Posts.list_posts(), :tags) == [post]
     end
 
     test "list_posts/0 returns all posts except visible" do
       user = user_fixture()
       post = post_fixture(visible: true, published_on: nil, user_id: user.id)
       _post2 = post_fixture(visible: false, user_id: user.id)
-      assert Posts.list_posts() == [post]
+      assert Repo.preload(Posts.list_posts(), :tags) == [post]
     end
 
     test "list_posts/0 returns posts displayed as from newest -> oldest" do
@@ -50,18 +50,20 @@ defmodule PhoenixBlog.PostsTest do
           published_on: DateTime.utc_now() |> DateTime.add(1, :day)
         )
 
-      assert Posts.list_posts() == [present, past]
+      assert Repo.preload(Posts.list_posts(), :tags) == [present, past]
     end
 
     test "get_post!/1 returns the post with given id" do
       user = user_fixture()
       post = post_fixture(user_id: user.id)
 
-      assert Posts.get_post!(post.id) == Repo.preload(post, [:user, comments: [:user]])
+      assert Repo.preload(Posts.get_post!(post.id), :tags) ==
+               Repo.preload(post, [:user, comments: [:user]])
     end
 
     test "create_post/1 with valid data creates a post" do
       user = user_fixture()
+
       valid_attrs = %{content: "some content", title: "some title", user_id: user.id}
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
@@ -139,30 +141,30 @@ defmodule PhoenixBlog.PostsTest do
       post = post_fixture(title: "Title", user_id: user.id)
 
       # non-matching
-      assert Posts.filter_posts("Non-Matching") == []
+      assert Repo.preload(Posts.filter_posts("Non-Matching"), :tags) == []
       # exact match
-      assert Posts.filter_posts("Title") == [post]
+      assert Repo.preload(Posts.filter_posts("Title"), :tags) == [post]
       # partial match end
-      assert Posts.filter_posts("tle") == [post]
+      assert Repo.preload(Posts.filter_posts("tle"), :tags) == [post]
       # partial match front
-      assert Posts.filter_posts("Titl") == [post]
+      assert Repo.preload(Posts.filter_posts("Titl"), :tags) == [post]
       # partial match middle
-      assert Posts.filter_posts("itl") == [post]
+      assert Repo.preload(Posts.filter_posts("itl"), :tags) == [post]
       # case insensitive lower
-      assert Posts.filter_posts("title") == [post]
+      assert Repo.preload(Posts.filter_posts("title"), :tags) == [post]
       # case insensitive upper
-      assert Posts.filter_posts("TITLE") == [post]
+      assert Repo.preload(Posts.filter_posts("TITLE"), :tags) == [post]
       # case insensitive and partial match
-      assert Posts.filter_posts("ITL") == [post]
+      assert Repo.preload(Posts.filter_posts("ITL"), :tags) == [post]
       # empty
-      assert Posts.filter_posts("") == [post]
+      assert Repo.preload(Posts.filter_posts(""), :tags) == [post]
     end
   end
 
   describe "tags" do
     alias PhoenixBlog.Posts.Tag
 
-    import PhoenixBlog.PostsFixtures
+    import PhoenixBlog.TagsFixtures
 
     @invalid_attrs %{name: nil}
 

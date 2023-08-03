@@ -3,6 +3,7 @@ defmodule PhoenixBlogWeb.PostControllerTest do
 
   import PhoenixBlog.PostsFixtures
   import PhoenixBlog.AccountsFixtures
+  import PhoenixBlog.TagsFixtures
 
   @create_attrs %{content: "some content", title: "some title"}
   @update_attrs %{

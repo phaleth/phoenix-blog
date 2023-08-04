@@ -1,8 +1,13 @@
+<.back navigate={~p"/posts"}>Back to posts</.back>
+
 <.header>
   Post <%= @post.id %>
   <:subtitle>This is a post record from your database.</:subtitle>
   <:actions>
-    <.link href={~p"/posts/#{@post}/edit"}>
+    <.link
+      :if={assigns[:current_user] && assigns[:current_user].id == @post.user_id}
+      href={~p"/posts/#{@post}/edit"}
+    >
       <.button>Edit post</.button>
     </.link>
   </:actions>
@@ -18,9 +23,8 @@
       else: Calendar.strftime(@post.published_on, "%A %b. %d, %Y @ %I:%M") %>
   </:item>
   <:item title="Username"><%= @post.user.username %></:item>
+  <:item title="Tags"><%= @tags %></:item>
 </.list>
-
-<.back navigate={~p"/posts"}>Back to posts</.back>
 
 <%= for comment <- @post.comments do %>
   <.header>

@@ -40,7 +40,14 @@ defmodule PhoenixBlogWeb.PostController do
 
     comment_changeset = Comments.change_comment(%Comment{})
 
-    render(conn, :show, post: post, comment_changeset: comment_changeset)
+    render(conn, :show,
+      post: post,
+      comment_changeset: comment_changeset,
+      tags:
+        Enum.map_join(post.tags, "; ", fn tag ->
+          tag.name
+        end)
+    )
   end
 
   def edit(conn, %{"id" => id}) do

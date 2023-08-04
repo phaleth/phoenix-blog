@@ -53,6 +53,8 @@ defmodule PhoenixBlogWeb.Router do
     pipe_through [:browser]
 
     resources "/posts", PostController, only: [:index, :show]
+    get "/tags/new", TagController, :new
+    resources "/tags", TagController
 
     get "/", PageController, :home
     get "/search", PostController, :search

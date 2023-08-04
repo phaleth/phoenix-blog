@@ -12,6 +12,7 @@
     label="Publish On"
     value={DateTime.utc_now()}
   />
+  <.input field={f[:tag_ids]} type="select" label="Tags" multiple={true} options={@tag_options} />
   <:actions>
     <.button>Save Post</.button>
   </:actions>

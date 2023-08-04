@@ -163,6 +163,7 @@ defmodule PhoenixBlogWeb.PostControllerTest do
   defp create_post(_) do
     user = user_fixture()
     post = post_fixture(user_id: user.id)
+    cover_image_fixture(post_id: post.id)
     %{post: post, user: user}
   end
 end

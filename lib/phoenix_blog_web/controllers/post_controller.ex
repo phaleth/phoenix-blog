@@ -14,7 +14,9 @@ defmodule PhoenixBlogWeb.PostController do
   end
 
   def new(conn, _params) do
-    changeset = Posts.change_post(%Post{tags: []})
+    changeset =
+      Posts.change_post(%Post{tags: []})
+
     render(conn, :new, changeset: changeset, tag_options: tag_options())
   end
 

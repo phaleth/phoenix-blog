@@ -54,7 +54,6 @@ defmodule PhoenixBlogWeb.Router do
 
     resources "/posts", PostController, only: [:index, :show]
     get "/tags/new", TagController, :new
-    resources "/tags", TagController
 
     get "/", PageController, :home
     get "/search", PostController, :search
@@ -81,6 +80,7 @@ defmodule PhoenixBlogWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    resources "/tags", TagController
   end
 
   scope "/", PhoenixBlogWeb do

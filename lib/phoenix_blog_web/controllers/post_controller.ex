@@ -3,7 +3,6 @@ defmodule PhoenixBlogWeb.PostController do
 
   plug :require_user_owns_post when action in [:edit, :update, :delete]
 
-  alias PhoenixBlog.Posts.CoverImage
   alias PhoenixBlog.Comments
   alias PhoenixBlog.Comments.Comment
   alias PhoenixBlog.Posts
@@ -42,12 +41,10 @@ defmodule PhoenixBlogWeb.PostController do
     post = Posts.get_post!(id)
 
     comment_changeset = Comments.change_comment(%Comment{})
-    cover_image = post.cover_image.url
 
     render(conn, :show,
       post: post,
       comment_changeset: comment_changeset,
-      cover_image: cover_image,
       tags:
         Enum.map_join(post.tags, "; ", fn tag ->
           tag.name

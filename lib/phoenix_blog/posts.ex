@@ -120,7 +120,7 @@ defmodule PhoenixBlog.Posts do
       %Ecto.Changeset{data: %Post{}}
 
   """
-  def change_post(%Post{} = post, attrs \\ %{}, tags \\ []) do
+  def change_post(%Post{} = post, attrs \\ %{}) do
     Post.changeset(post, attrs)
   end
 

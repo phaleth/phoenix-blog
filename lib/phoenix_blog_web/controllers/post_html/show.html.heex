@@ -12,7 +12,9 @@
     </.link>
   </:actions>
 </.header>
-<img src={@cover_image} />
+
+<img :if={@post.cover_image} src={@post.cover_image.url} />
+
 <.list>
   <:item title="Title"><%= @post.title %></:item>
   <:item title="Content"><%= @post.content %></:item>

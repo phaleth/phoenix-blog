@@ -3,6 +3,7 @@ defmodule PhoenixBlogWeb.PostController do
 
   plug :require_user_owns_post when action in [:edit, :update, :delete]
 
+  alias PhoenixBlog.Posts.CoverImage
   alias PhoenixBlog.Comments
   alias PhoenixBlog.Comments.Comment
   alias PhoenixBlog.Posts
@@ -14,12 +15,15 @@ defmodule PhoenixBlogWeb.PostController do
   end
 
   def new(conn, _params) do
-    changeset = Posts.change_post(%Post{tags: []})
+    changeset =
+      Posts.change_post(%Post{tags: []})
+
     render(conn, :new, changeset: changeset, tag_options: tag_options())
   end
 
   def create(conn, %{"post" => post_params}) do
     tags = Map.get(post_params, "tag_ids", []) |> Enum.map(&Posts.get_tag!/1)
+    dbg(post_params)
 
     case Posts.create_post(post_params, tags) do
       {:ok, post} ->
@@ -39,10 +43,12 @@ defmodule PhoenixBlogWeb.PostController do
     post = Posts.get_post!(id)
 
     comment_changeset = Comments.change_comment(%Comment{})
+    cover_image = post.cover_image.url
 
     render(conn, :show,
       post: post,
       comment_changeset: comment_changeset,
+      cover_image: cover_image,
       tags:
         Enum.map_join(post.tags, "; ", fn tag ->
           tag.name

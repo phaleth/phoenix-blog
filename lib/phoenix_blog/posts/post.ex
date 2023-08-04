@@ -20,6 +20,7 @@ defmodule PhoenixBlog.Posts.Post do
     post
     |> cast(attrs, [:title, :content, :visible, :published_on, :user_id])
     # |> validate_change( TODO )
+    |> cast_assoc(:cover_image)
     |> validate_required([:title, :content, :visible, :user_id])
     |> foreign_key_constraint(:user_id)
     |> put_assoc(:tags, tags)

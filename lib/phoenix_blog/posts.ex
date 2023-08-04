@@ -54,7 +54,7 @@ defmodule PhoenixBlog.Posts do
 
   """
   def get_post!(id) do
-    from(p in Post, preload: [:user, :tags, comments: [:user]])
+    from(p in Post, preload: [:user, :tags, :cover_image, comments: [:user]])
     |> Repo.get!(id)
   end
 
@@ -90,6 +90,7 @@ defmodule PhoenixBlog.Posts do
   """
   def update_post(%Post{} = post, attrs, tags \\ []) do
     post
+    |> Repo.preload(:cover_image)
     |> Post.changeset(attrs, tags)
     |> Repo.update()
   end

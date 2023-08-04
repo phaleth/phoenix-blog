@@ -12,7 +12,7 @@ defmodule PhoenixBlog.Posts.CoverImage do
   @doc false
   def changeset(cover_image, attrs) do
     cover_image
-    |> cast(attrs, [:url])
+    |> cast(attrs, [:url, :post_id])
     |> validate_required([:url])
   end
 end

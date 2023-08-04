@@ -23,7 +23,6 @@ defmodule PhoenixBlogWeb.PostController do
 
   def create(conn, %{"post" => post_params}) do
     tags = Map.get(post_params, "tag_ids", []) |> Enum.map(&Posts.get_tag!/1)
-    dbg(post_params)
 
     case Posts.create_post(post_params, tags) do
       {:ok, post} ->

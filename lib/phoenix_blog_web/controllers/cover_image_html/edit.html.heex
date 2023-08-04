@@ -1,0 +1,8 @@
+<.header>
+  Edit Cover image <%= @cover_image.id %>
+  <:subtitle>Use this form to manage cover_image records in your database.</:subtitle>
+</.header>
+
+<.cover_image_form changeset={@changeset} action={~p"/cover_images/#{@cover_image}"} />
+
+<.back navigate={~p"/cover_images"}>Back to cover_images</.back>

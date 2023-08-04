@@ -214,4 +214,58 @@ defmodule PhoenixBlog.PostsTest do
       assert %Ecto.Changeset{} = Posts.change_tag(tag)
     end
   end
+
+  describe "cover_images" do
+    alias PhoenixBlog.Posts.CoverImage
+
+    import PhoenixBlog.PostsFixtures
+
+    @invalid_attrs %{url: nil}
+
+    test "list_cover_images/0 returns all cover_images" do
+      cover_image = cover_image_fixture()
+      assert Posts.list_cover_images() == [cover_image]
+    end
+
+    test "get_cover_image!/1 returns the cover_image with given id" do
+      cover_image = cover_image_fixture()
+      assert Posts.get_cover_image!(cover_image.id) == cover_image
+    end
+
+    test "create_cover_image/1 with valid data creates a cover_image" do
+      valid_attrs = %{url: "some url"}
+
+      assert {:ok, %CoverImage{} = cover_image} = Posts.create_cover_image(valid_attrs)
+      assert cover_image.url == "some url"
+    end
+
+    test "create_cover_image/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Posts.create_cover_image(@invalid_attrs)
+    end
+
+    test "update_cover_image/2 with valid data updates the cover_image" do
+      cover_image = cover_image_fixture()
+      update_attrs = %{url: "some updated url"}
+
+      assert {:ok, %CoverImage{} = cover_image} = Posts.update_cover_image(cover_image, update_attrs)
+      assert cover_image.url == "some updated url"
+    end
+
+    test "update_cover_image/2 with invalid data returns error changeset" do
+      cover_image = cover_image_fixture()
+      assert {:error, %Ecto.Changeset{}} = Posts.update_cover_image(cover_image, @invalid_attrs)
+      assert cover_image == Posts.get_cover_image!(cover_image.id)
+    end
+
+    test "delete_cover_image/1 deletes the cover_image" do
+      cover_image = cover_image_fixture()
+      assert {:ok, %CoverImage{}} = Posts.delete_cover_image(cover_image)
+      assert_raise Ecto.NoResultsError, fn -> Posts.get_cover_image!(cover_image.id) end
+    end
+
+    test "change_cover_image/1 returns a cover_image changeset" do
+      cover_image = cover_image_fixture()
+      assert %Ecto.Changeset{} = Posts.change_cover_image(cover_image)
+    end
+  end
 end

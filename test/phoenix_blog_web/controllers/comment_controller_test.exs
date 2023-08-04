@@ -13,6 +13,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
     test "redirects to post show page", %{conn: conn} do
       user = user_fixture()
       post = post_fixture(user_id: user.id)
+      cover_image_fixture(post_id: post.id)
 
       create_comment =
         Map.merge(@create_attrs, %{post_id: post.id, user_id: user.id})
@@ -44,6 +45,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
     setup [:create_comment]
 
     test "redirects when data is valid", %{conn: conn, comment: comment, user: user} do
+      cover_image_fixture(post_id: comment.post_id)
       conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @update_attrs)
       assert redirected_to(conn) == ~p"/posts/#{comment.post_id}"
 
@@ -53,6 +55,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
 
     test "redirects when doesnt own the comment", %{conn: conn, comment: comment} do
       user = user_fixture()
+      cover_image_fixture(post_id: comment.post_id)
       conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @update_attrs)
       assert redirected_to(conn) == ~p"/posts/#{comment.post_id}"
 

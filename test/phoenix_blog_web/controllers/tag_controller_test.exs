@@ -9,8 +9,10 @@ defmodule PhoenixBlogWeb.TagControllerTest do
   @invalid_attrs %{name: nil}
 
   describe "index" do
-    test "lists all tags", %{conn: conn} do
-      conn = get(conn, ~p"/tags")
+    setup [:create_tag]
+
+    test "lists all tags", %{conn: conn, user: user} do
+      conn = conn |> log_in_user(user) |> get(~p"/tags")
       assert html_response(conn, 200) =~ "Listing Tags"
     end
   end
@@ -23,8 +25,10 @@ defmodule PhoenixBlogWeb.TagControllerTest do
   end
 
   describe "create tag" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/tags", tag: @create_attrs)
+    setup [:create_tag]
+
+    test "redirects to show when data is valid", %{conn: conn, user: user} do
+      conn = conn |> log_in_user(user) |> post(~p"/tags", tag: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/tags/#{id}"
@@ -33,8 +37,8 @@ defmodule PhoenixBlogWeb.TagControllerTest do
       assert html_response(conn, 200) =~ "Tag #{id}"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/tags", tag: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, user: user} do
+      conn = conn |> log_in_user(user) |> post(~p"/tags", tag: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Tag"
     end
   end
@@ -42,8 +46,8 @@ defmodule PhoenixBlogWeb.TagControllerTest do
   describe "edit tag" do
     setup [:create_tag]
 
-    test "renders form for editing chosen tag", %{conn: conn, tag: tag} do
-      conn = get(conn, ~p"/tags/#{tag}/edit")
+    test "renders form for editing chosen tag", %{conn: conn, tag: tag, user: user} do
+      conn = conn |> log_in_user(user) |> get(~p"/tags/#{tag}/edit")
       assert html_response(conn, 200) =~ "Edit Tag"
     end
   end
@@ -59,8 +63,8 @@ defmodule PhoenixBlogWeb.TagControllerTest do
       assert html_response(conn, 200) =~ "some updated name"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, tag: tag} do
-      conn = put(conn, ~p"/tags/#{tag}", tag: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, tag: tag, user: user} do
+      conn = conn |> log_in_user(user) |> put(~p"/tags/#{tag}", tag: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Tag"
     end
   end
@@ -68,8 +72,8 @@ defmodule PhoenixBlogWeb.TagControllerTest do
   describe "delete tag" do
     setup [:create_tag]
 
-    test "deletes chosen tag", %{conn: conn, tag: tag} do
-      conn = delete(conn, ~p"/tags/#{tag}")
+    test "deletes chosen tag", %{conn: conn, tag: tag, user: user} do
+      conn = conn |> log_in_user(user) |> delete(~p"/tags/#{tag}")
       assert redirected_to(conn) == ~p"/tags"
 
       assert_error_sent 404, fn ->

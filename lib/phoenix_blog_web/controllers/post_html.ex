@@ -10,6 +10,7 @@ defmodule PhoenixBlogWeb.PostHTML do
   attr :action, :string, required: true
   attr :current_user, PhoenixBlog.Accounts.User, required: true
   attr :tag_options, :list
+  attr :cover_image, :string
 
   def post_form(assigns)
 end

@@ -20,4 +20,18 @@ defmodule PhoenixBlog.PostsFixtures do
 
     post
   end
+
+  @doc """
+  Generate a cover_image.
+  """
+  def cover_image_fixture(attrs \\ %{}) do
+    {:ok, cover_image} =
+      attrs
+      |> Enum.into(%{
+        url: "some url"
+      })
+      |> PhoenixBlog.Posts.create_cover_image()
+
+    cover_image
+  end
 end

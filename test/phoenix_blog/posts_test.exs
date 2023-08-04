@@ -3,13 +3,12 @@ defmodule PhoenixBlog.PostsTest do
 
   alias PhoenixBlog.Posts
   alias PhoenixBlog.Comments
+  import PhoenixBlog.PostsFixtures
+  import PhoenixBlog.CommentsFixtures
+  import PhoenixBlog.AccountsFixtures
 
   describe "posts" do
     alias PhoenixBlog.Posts.Post
-
-    import PhoenixBlog.PostsFixtures
-    import PhoenixBlog.CommentsFixtures
-    import PhoenixBlog.AccountsFixtures
 
     @invalid_attrs %{content: nil, title: nil}
 
@@ -58,7 +57,7 @@ defmodule PhoenixBlog.PostsTest do
       post = post_fixture(user_id: user.id)
 
       assert Repo.preload(Posts.get_post!(post.id), :tags) ==
-               Repo.preload(post, [:user, comments: [:user]])
+               Repo.preload(post, [:user, :cover_image, comments: [:user]])
     end
 
     test "create_post/1 with valid data creates a post" do
@@ -96,7 +95,7 @@ defmodule PhoenixBlog.PostsTest do
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
 
       preloaded =
-        from(p in Post, preload: [:user, :tags, comments: [:user]])
+        from(p in Post, preload: [:user, :tags, :cover_image, comments: [:user]])
         |> Repo.get!(post.id)
 
       assert preloaded == Posts.get_post!(post.id)
@@ -212,6 +211,68 @@ defmodule PhoenixBlog.PostsTest do
     test "change_tag/1 returns a tag changeset" do
       tag = tag_fixture()
       assert %Ecto.Changeset{} = Posts.change_tag(tag)
+    end
+  end
+
+  describe "cover_images" do
+    alias PhoenixBlog.Posts.CoverImage
+
+    @invalid_attrs %{url: nil}
+
+    setup do
+      user = user_fixture()
+
+      %{
+        post: post_fixture(user_id: user.id)
+      }
+    end
+
+    test "list_cover_images/0 returns all cover_images", %{post: post} do
+      cover_image = cover_image_fixture(post_id: post.id)
+      assert Posts.list_cover_images() == [cover_image]
+    end
+
+    test "get_cover_image!/1 returns the cover_image with given id", %{post: post} do
+      cover_image = cover_image_fixture(post_id: post.id)
+      assert Posts.get_cover_image!(cover_image.id) == cover_image
+    end
+
+    test "create_cover_image/1 with valid data creates a cover_image", %{post: post} do
+      valid_attrs = %{url: "some url", post_id: post.id}
+
+      assert {:ok, %CoverImage{} = cover_image} = Posts.create_cover_image(valid_attrs)
+      assert cover_image.url == "some url"
+    end
+
+    test "create_cover_image/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Posts.create_cover_image(@invalid_attrs)
+    end
+
+    test "update_cover_image/2 with valid data updates the cover_image", %{post: post} do
+      cover_image = cover_image_fixture(post_id: post.id)
+      update_attrs = %{url: "some updated url"}
+
+      assert {:ok, %CoverImage{} = cover_image} =
+               Posts.update_cover_image(cover_image, update_attrs)
+
+      assert cover_image.url == "some updated url"
+    end
+
+    test "update_cover_image/2 with invalid data returns error changeset", %{post: post} do
+      cover_image = cover_image_fixture(post_id: post.id)
+      assert {:error, %Ecto.Changeset{}} = Posts.update_cover_image(cover_image, @invalid_attrs)
+      assert cover_image == Posts.get_cover_image!(cover_image.id)
+    end
+
+    test "delete_cover_image/1 deletes the cover_image", %{post: post} do
+      cover_image = cover_image_fixture(post_id: post.id)
+      assert {:ok, %CoverImage{}} = Posts.delete_cover_image(cover_image)
+      assert_raise Ecto.NoResultsError, fn -> Posts.get_cover_image!(cover_image.id) end
+    end
+
+    test "change_cover_image/1 returns a cover_image changeset", %{post: post} do
+      cover_image = cover_image_fixture(post_id: post.id)
+      assert %Ecto.Changeset{} = Posts.change_cover_image(cover_image)
     end
   end
 end

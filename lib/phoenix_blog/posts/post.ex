@@ -10,6 +10,7 @@ defmodule PhoenixBlog.Posts.Post do
     has_many :comments, PhoenixBlog.Comments.Comment
     belongs_to :user, PhoenixBlog.Accounts.User
     many_to_many :tags, PhoenixBlog.Posts.Tag, join_through: "posts_tags", on_replace: :delete
+    has_one :cover_image, PhoenixBlog.Posts.CoverImage
 
     timestamps()
   end

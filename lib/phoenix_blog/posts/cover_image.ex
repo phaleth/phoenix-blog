@@ -4,7 +4,7 @@ defmodule PhoenixBlog.Posts.CoverImage do
 
   schema "cover_images" do
     field :url, :string
-    field :post_id, :id
+    belongs_to :post, PhoenixBlog.Posts.Post
 
     timestamps()
   end

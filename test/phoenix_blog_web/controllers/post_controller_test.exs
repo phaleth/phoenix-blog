@@ -40,11 +40,13 @@ defmodule PhoenixBlogWeb.PostControllerTest do
         |> log_in_user(user)
         |> post(~p"/posts", post: Map.merge(%{user_id: user.id}, @create_attrs))
 
+      %{params: params} = conn
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/posts/#{id}"
 
       conn = get(conn, ~p"/posts/#{id}")
-      assert html_response(conn, 200) =~ "Post #{id}"
+
+      assert html_response(conn, 200) =~ params["post"]["title"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

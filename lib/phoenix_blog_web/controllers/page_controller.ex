@@ -1,9 +1,8 @@
 defmodule PhoenixBlogWeb.PageController do
   use PhoenixBlogWeb, :controller
+  alias PhoenixBlog.Posts
 
   def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home)
+    render(conn, :home, post: Posts.random_post(), posts: Posts.three_list_posts())
   end
 end

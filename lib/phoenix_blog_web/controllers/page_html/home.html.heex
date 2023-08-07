@@ -7,7 +7,7 @@
       </h2>
     </div>
 
-    <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20">
+    <div :if={!is_nil(@post)} class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20">
       <article class="flex flex-col items-start justify-between">
         <div class="relative w-full">
           <img

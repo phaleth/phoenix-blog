@@ -18,7 +18,7 @@ defmodule PhoenixBlog.Posts do
       [%Post{}, ...]
 
   """
-  def list_posts do
+  def list_posts() do
     now = DateTime.utc_now()
 
     from(p in Post,
@@ -27,6 +27,32 @@ defmodule PhoenixBlog.Posts do
       order_by: [desc: p.published_on]
     )
     |> Repo.all()
+  end
+
+  def three_list_posts() do
+    now = DateTime.utc_now()
+
+    from(p in Post,
+      where: p.visible == true,
+      where: is_nil(p.published_on) or p.published_on < ^now,
+      order_by: [desc: p.published_on],
+      preload: [:user, :cover_image],
+      limit: 3
+    )
+    |> Repo.all()
+  end
+
+  def random_post do
+    now = DateTime.utc_now()
+
+    from(p in Post,
+      where: p.visible == true,
+      where: is_nil(p.published_on) or p.published_on < ^now,
+      order_by: fragment("RANDOM()"),
+      preload: [:user, :cover_image],
+      limit: 1
+    )
+    |> Repo.one()
   end
 
   def filter_posts(search_term) do

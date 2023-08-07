@@ -28,7 +28,7 @@ defmodule PhoenixBlogWeb.CommentControllerTest do
       assert redirected_to(conn) == ~p"/posts/#{post.id}"
 
       conn = get(conn, ~p"/posts/#{post.id}")
-      assert html_response(conn, 200) =~ "Post #{post.id}"
+      assert html_response(conn, 200) =~ post.title
     end
   end
 

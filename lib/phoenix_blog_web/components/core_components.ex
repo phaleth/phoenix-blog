@@ -679,7 +679,7 @@ defmodule PhoenixBlogWeb.CoreComponents do
       </.error>
       <.input field={f[:user_id]} type="hidden" value={@current_user.id} />
       <.input field={f[:post_id]} type="hidden" value={@post_id} />
-      <.input field={f[:content]} type="text" label="Content" />
+      <.input field={f[:content]} type="text" label="Add Comment" />
       <:actions>
         <.button>Save Comment</.button>
       </:actions>

@@ -12,6 +12,7 @@ config :phoenix_blog,
 
 # Configures the endpoint
 config :phoenix_blog, PhoenixBlogWeb.Endpoint,
+  adapter: Bandit.PhoenixAdapter,
   url: [host: "localhost"],
   render_errors: [
     formats: [html: PhoenixBlogWeb.ErrorHTML, json: PhoenixBlogWeb.ErrorJSON],

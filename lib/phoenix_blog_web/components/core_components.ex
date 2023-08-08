@@ -686,4 +686,28 @@ defmodule PhoenixBlogWeb.CoreComponents do
     </.simple_form>
     """
   end
+
+  attr :name, :string, default: "My Awesome Blog"
+
+  def logo(assigns) do
+    ~H"""
+    <div class="flex">
+      <svg
+        class="w-10 h-10 p-2 mr-3 text-white rounded-full bg-primary"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+      </svg>
+      <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+        <%= @name %>
+      </span>
+    </div>
+    """
+  end
 end

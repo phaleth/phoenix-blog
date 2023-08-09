@@ -50,7 +50,8 @@ defmodule PhoenixBlog.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:bandit, "~> 1.0-pre"}
+      {:bandit, "~> 1.0-pre"},
+      {:dialyxir, "~> 1.3", only: :dev, runtime: false}
     ]
   end
 

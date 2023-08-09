@@ -1,4 +1,6 @@
 defmodule PhoenixBlog.Posts.Tag do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,4 +1,6 @@
 defmodule PhoenixBlog.Accounts.UserToken do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Query
   alias PhoenixBlog.Accounts.UserToken

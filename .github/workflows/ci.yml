@@ -86,7 +86,7 @@ jobs:
         run: mix dialyzer
 
       - name: Credo Check
-        run: mix credo
+        run: mix credo --all
 
       - name: Run Tests
         run: mix test

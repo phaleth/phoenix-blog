@@ -1,4 +1,6 @@
 defmodule PhoenixBlog.Accounts.UserNotifier do
+  @moduledoc false
+  
   import Swoosh.Email
 
   alias PhoenixBlog.Mailer

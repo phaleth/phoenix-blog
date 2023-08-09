@@ -1,4 +1,6 @@
 defmodule PhoenixBlogWeb.UserAuth do
+  @moduledoc false
+
   use PhoenixBlogWeb, :verified_routes
 
   import Plug.Conn

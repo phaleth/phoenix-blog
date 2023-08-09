@@ -82,6 +82,9 @@ jobs:
       - name: Check Formatting
         run: mix format --check-formatted
 
+      - name: Dialyzer Check
+        run: mix dialyzer
+
       - name: Credo Check
         run: mix credo
 

@@ -15,7 +15,7 @@
             src={
               if @post.cover_image,
                 do: @post.cover_image.url,
-                else: "https://picsum.photos/580/280"
+                else: "https://picsum.photos/id/#{@post.id}/580/280"
             }
             alt=""
             class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
@@ -109,6 +109,8 @@
         current_user={@current_user}
         action={~p"/comments"}
       />
+    <% else %>
+      <p class="text-xs my-2 px-2">Sign in to leave a comment</p>
     <% end %>
   </div>
 </div>

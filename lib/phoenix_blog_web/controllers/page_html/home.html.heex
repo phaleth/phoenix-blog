@@ -14,7 +14,7 @@
             <img src={
               if(@post.cover_image,
                 do: @post.cover_image.url,
-                else: "https://picsum.photos/580/280"
+                else: "https://picsum.photos/id/#{@post.id}/580/280"
               )
             } />
           </a>

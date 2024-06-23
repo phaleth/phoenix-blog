@@ -1,6 +1,12 @@
 # PhoenixBlog
 
-Setup database
+## Setup development database
+
+```sh
+mix ecto.setup
+```
+
+## Setup test database
 
 ```sh
 docker run -d -p 5433:5432 --name=postgres \
@@ -31,7 +37,13 @@ Verify environment variables are loaded
 echo $POSTGRES_USERNAME
 ```
 
-To start your Phoenix server:
+Finally setup the test database
+
+```sh
+mix ecto.setup
+```
+
+## Phoenix server usage
 
 - Run `mix setup` to install and setup dependencies
 - Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`

@@ -1,18 +1,20 @@
-# fly.toml app configuration file generated for phoenix-blog on 2023-07-21T23:18:38+02:00
+# fly.toml app configuration file generated for phoenix-blog on 2024-06-23T10:33:24+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "phoenix-blog"
-primary_region = "yul"
-kill_signal = "SIGTERM"
-
-[deploy]
-  release_command = "/app/bin/migrate"
+app = 'phoenix-blog'
+primary_region = 'nrt'
+kill_signal = 'SIGTERM'
 
 [env]
-  PHX_HOST = "phoenix-blog.fly.dev"
-  PORT = "8080"
+  DATABASE_PATH = '/data/phoenix_blog_data/phoenix_blog_prod.db'
+  PHX_HOST = 'phoenix-blog.fly.dev'
+  PORT = '8080'
+
+[[mounts]]
+  source = 'phoenix_blog_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 8080
@@ -20,8 +22,12 @@ kill_signal = "SIGTERM"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
+  processes = ['app']
+
   [http_service.concurrency]
-    type = "connections"
+    type = 'connections'
     hard_limit = 1000
     soft_limit = 1000
+
+[[vm]]
+  size = 'shared-cpu-1x'

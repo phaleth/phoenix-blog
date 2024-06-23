@@ -39,3 +39,6 @@ npm-debug.log
 .env
 .tool-versions
 
+# Database files
+*.db
+*.db-*
